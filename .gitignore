@@ -60,3 +60,30 @@ target/
 
 #Ipython Notebook
 .ipynb_checkpoints
+
+# Mac stuff
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon must end with two \r
+Icon
+
+
+# Thumbnails
+._*
+
+# Windows stuff
+
+# Folder config file
+Desktop.ini
+
+# Windows shortcuts
+*.lnk
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# PyCharm files
+.idea/
