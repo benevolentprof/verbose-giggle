@@ -21,9 +21,10 @@ Assume that the square directly North from (x, y) is (x, y+1).
 
 ```
 Input:
-Configuration Input: The first line of input is the upper-right coordinates of the plateau, the lower-left coordinates are assumed to be 0,0.
-Per Rover.Test Input:8 4
+Configuration Input: The first line of input is the upper-right coordinates of the plateau, the lower-left coordinates are assumed to be 0,0. Per Rover. Test Input:8 4
+
 Input 1: Landing co-ordinates for the Rover The position is made up of two integers and a letter separated by spaces, corresponding to the x and y co-ordinates and the rover's orientation. Test Input:1 2 N
+
 Input 2: Navigation instructions i.e a string containing ('L', 'R', 'M'). Test Input:LMLMLMLMM
 
 Test Input:
