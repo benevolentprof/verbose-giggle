@@ -41,16 +41,6 @@ def get_instructions(prompt):
     output = []
 
     input_string = raw_input(prompt)
-    input_list = input_string.split()
-
-    if len(input_list) != 2:
-        raise Usage("Coordinates must have an x and a y value")
-
-    for number in input_list:
-        if number.isdigit():
-            output.append(int(number))
-        else:
-            raise Usage("Coordinates must be positive integers")
 
     return output
 
