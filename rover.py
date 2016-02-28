@@ -25,13 +25,37 @@ __license__ = "MIT License"
 import sys
 import textwrap
 
+class Usage(Exception):
+    def __init(self, message):
+        self.message = message
+
+
+def get_plateau():
+
+    output = []
+
+    input_plateau = raw_input("Plateau:")
+    input_plateau = input_plateau.split()
+
+    if len(input_plateau) != 2:
+        raise Usage("Plateau must have two coordinates")
+
+    for number in input_plateau:
+        if number.isdigit():
+            output.append(int(number))
+        else:
+            raise Usage("Plateau coordinates must be positive integers")
+
+    return output
+
+
 def main(argv=None):
 
     if argv is None:
         argv = sys.argv
     # parse command line options
     if len(argv) == 1:
-        print("Here!")
+        plateau = get_plateau()
     elif argv[1] == "-h" or argv[1] == "--help":
         print (textwrap.dedent(__doc__))
     else:
