@@ -9,21 +9,8 @@ __email__ = "ses@drsusansim.org"
 __copyright__ = "2016 Susan Sim"
 __license__ = "MIT License"
 
-from rover import main, Usage, get_location
+from rover import main, Usage, get_plateau, get_landing, get_instruction
 import mock
-
-
-# def test_cli_noargs(capsys):
-#     """Tests calling main from the command line with no arguments.
-#     """
-#     # Create argument list
-#     args = ["rover.py"]
-#     # Call function
-#     main(args)
-#     (out, err) = capsys.readouterr();
-#     # Check output
-#     assert out == "Plateau:"
-
 
 def test_cli_help(capsys):
     """ Tests calling main with -h or --help for instructions
@@ -72,14 +59,14 @@ def test_cli_plateau(capsys):
 
 
 def test_get_plateau_error():
-    """Tests calling inputting invalid coordinates to get_plateau()
+    """Tests calling inputting invalid coordinates to get_location()
     """
     top_corners=["a", "a b", "a, b", "1", "1,2", "1, 2", "-1 -3"]
     # Call function:
     for corner in top_corners:
         with mock.patch("__builtin__.raw_input", return_value=corner):
             try:
-                get_location("Location:")
+                get_plateau()
             except Usage:
                 assert True
             else:
@@ -87,7 +74,7 @@ def test_get_plateau_error():
 
 
 def test_get_plateau_correct():
-    """Tests calling inputting valid coordinates to get_plateau()
+    """Tests calling inputting valid coordinates to get_location()
     """
     top_corners=["1 1", "2 5", "9223372036854775807 9223372036854775807"]
     xy_list = [[1, 1], [2, 5], [9223372036854775807, 9223372036854775807]]
@@ -95,9 +82,80 @@ def test_get_plateau_correct():
     for corner, xy in zip(top_corners, xy_list):
         with mock.patch("__builtin__.raw_input", return_value=corner):
             try:
-                input_loc = get_location("Location:")
+                input_loc = get_plateau()
                 assert input_loc == xy
             except Usage as u:
                 print u.message
                 assert False
 
+
+def test_get_landing_error():
+    """Tests calling inputting invalid coordinates to get_location()
+    """
+    landing_strings = ["a", "a a", "a a a",
+                       "1", "1 1", "1 1 1",
+                       "2 2 n", "2 2 N "]
+    # Call function:
+    for landing in landing_strings:
+        with mock.patch("__builtin__.raw_input", return_value=landing):
+            try:
+                input_list = get_landing("1")
+            except Usage:
+                assert True
+            else:
+                print input_list
+                assert False
+
+def test_get_landing_correct():
+    """Tests calling inputting invalid coordinates to get_location()
+    """
+    landing_strings = ["02 2 N", "0 0 S", "33 44 E", "777 888 W"]
+    landing_list = [[2, 2, "N"], [0, 0, "S"], [33, 44, "E"], [777, 888, "W"]]
+    # Call function:
+    for landing, landing_l in zip(landing_strings, landing_list):
+        with mock.patch("__builtin__.raw_input", return_value=landing):
+            try:
+                input_list = get_landing("1")
+                assert input_list == landing_l
+            except Usage:
+                print landing_list
+                assert False
+
+
+
+def test_get_instruction_error():
+    """Tests calling inputting invalid coordinates to get_location()
+    """
+    instr_strings =["l", "m", "r", "La", "L M", "M R", " LM ", "aM", "q    R"]
+    # Call function:
+    for instr in instr_strings:
+        with mock.patch("__builtin__.raw_input", return_value=instr):
+            try:
+                instr_list = get_instruction("Instruction:")
+            except Usage:
+                assert True
+            else:
+                print instr_list
+                assert False
+
+
+def test_get_instruction_correct():
+    """Tests calling inputting invalid coordinates to get_location()
+    """
+    instr_strings =["L", "M", "R",
+                    "LM", "LR", "MR", "ML", "RL", "RM",
+                    "LMR", "LRM", "MRL", "MLR", "RLM", "RML"]
+    instr_lists =[
+        ["L"], ["M"], ["R"],
+        ["L", "M"], ["L", "R"], ["M", "R"], ["M", "L"], ["R", "L"], ["R", "M"],
+        ["L", "M", "R"], ["L", "R", "M"], ["M", "R", "L"], ["M", "L", "R"], ["R", "L", "M"], ["R", "M", "L"]
+    ]
+    # Call function:
+    for instr, instr_l in zip(instr_strings, instr_lists):
+        with mock.patch("__builtin__.raw_input", return_value=instr):
+            try:
+                input_list = get_instruction("Instruction:")
+                assert input_list == instr_l
+            except Usage as u:
+                print u.message
+                assert False

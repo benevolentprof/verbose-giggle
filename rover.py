@@ -24,6 +24,7 @@ __license__ = "MIT License"
 
 import sys
 import textwrap
+import re
 
 
 class Usage(Exception):
@@ -31,39 +32,70 @@ class Usage(Exception):
         self.message = message
 
 
-def get_instructions(prompt):
+def get_instruction(prompt):
     """
     Prompts the user to enter instructions to the rover. Inputs must consist of a sequence of Ls, Rs, and Ms in
     any order.
-    :return: a list strings, each consisting of one character that is an L, R, or M
+    :return: a list of strings, each consisting of one character that is an L, R, or M
     """
 
     output = []
 
     input_string = raw_input(prompt)
+    match_obj = re.match(r'^[LMR]*$', input_string)
+
+    if match_obj is None:
+        raise Usage("Instructions must consist of L, M, or R")
+    else:
+        for char in match_obj.group():
+            output.append(char)
 
     return output
 
-def get_location(prompt):
+
+def get_landing(lander):
     """
-    Prompts the user to enter coordinates. They must be positive integers
-    separated by spaces.
-    :return: a list two ints containing the x and y coordinates specifying the plateau
+     Prompts the user to enter coordinates and a facing. They must be two positive integers
+    and a facing separated by spaces. Facing must be one of N,E,S, or W.
+    :param lander: The number of the lander being prompted
+    :return: A list containing the inputs
     """
 
     output = []
 
-    input_string = raw_input(prompt)
-    input_list = input_string.split()
+    input_string = raw_input("Rover" + lander +" Landing:")
+    # Looking for a number whitespace number
+    # This will match 0,
+    match_obj = re.match(r'^(\d+)\s+(\d+)\s+([NSEW]{1})$', input_string)
 
-    if len(input_list) != 2:
-        raise Usage("Coordinates must have an x and a y value")
+    if match_obj is None :
+        raise Usage("Landing coordinates must be two positive integers and a facing (NESW).")
+    else:
+        output.append(int(match_obj.group(1)))
+        output.append(int(match_obj.group(2)))
+        output.append(match_obj.group(3))
 
-    for number in input_list:
-        if number.isdigit():
-            output.append(int(number))
-        else:
-            raise Usage("Coordinates must be positive integers")
+    return output
+
+def get_plateau():
+    """
+    Prompts the user to enter plateau coordinates. They must be positive integers
+    separated by spaces.
+    :return: a list of two ints containing the x and y coordinates specifying the plateau
+    """
+
+    output = []
+
+    input_string = raw_input("Plateau:")
+    # Looking for a number whitespace number
+    # This will match 0,
+    match_obj = re.match(r'^(\d+)\s+(\d+)$', input_string)
+
+    if match_obj is None :
+        raise Usage("Input coordinates must be two positive integers")
+    else:
+        output.append(int(match_obj.group(1)))
+        output.append(int(match_obj.group(2)))
 
     return output
 
@@ -80,9 +112,9 @@ def main(argv=None):
         else:
             print "Invalid syntax: " + "".join((" "+s) for s in argv)
     else:
-        plateau = get_location("Plateau:")
-        landing = get_location("Rover1 Landing:")
-        instructions = get_instructions("Rover1 Instructions:")
+        plateau = get_plateau()
+        landing = get_landing("Rover1")
+        instruction = get_instruction("Rover1 Instructions:")
 
 if __name__ == "__main__":
     main()
