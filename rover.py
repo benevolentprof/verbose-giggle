@@ -46,14 +46,15 @@ class BoundingBox():
         self.max_x = corner[0]
         self.max_y = corner[1]
 
-    def inside(self, location):
+    def is_outside(self, input_x, input_y):
         """
         Returns true if an xy-coordinate is inside the BoundingBox
         """
-        if location["x"] > self.max_x or location["y"] > self.max_y:
-            return False
-        else:
+        if input_x > self.max_x or input_y > self.max_y:
             return True
+        else:
+            return False
+
 
 
 def get_instruction(prompt):
@@ -77,7 +78,7 @@ def get_instruction(prompt):
     return output
 
 
-def get_landing(lander):
+def get_landing(lander, plateau):
     """
      Prompts the user to enter coordinates and a facing. They must be two positive integers
     and a facing separated by spaces. Facing must be one of N,E,S, or W.
@@ -87,7 +88,7 @@ def get_landing(lander):
 
     output = []
 
-    input_string = raw_input("Rover" + lander +" Landing:")
+    input_string = raw_input("Rover" + lander + " Landing:")
     # Looking for a number whitespace number
     # This will match 0,
     match_obj = re.match(r'^(\d+)\s+(\d+)\s+([NSEW]{1})$', input_string)
@@ -98,6 +99,9 @@ def get_landing(lander):
         output.append(int(match_obj.group(1)))
         output.append(int(match_obj.group(2)))
         output.append(match_obj.group(3))
+
+    if plateau.is_outside(output[0], output[1]):
+        raise ImproperLanding("Landing coordinates must be inside the plateau.")
 
     return output
 
@@ -137,10 +141,14 @@ def main(argv=None):
         else:
             print "Invalid syntax: " + "".join((" "+s) for s in argv)
     else:
-        plateau = BoundingBox(get_top_right_corner())
-        landing = get_landing("Rover1", plateau)
+        try:
+            plateau = BoundingBox(get_top_right_corner())
+            landing = get_landing("Rover1", plateau)
+        except Exception as e:
+            print e.message
+
         instruction = get_instruction("Rover1 Instructions:")
-        move(plateau, landing, instruction)
+        # move(plateau, landing, instruction)
 
 if __name__ == "__main__":
     main()
