@@ -28,8 +28,32 @@ import re
 
 
 class Usage(Exception):
-    def __init(self, message):
+    def __init__(self, message):
         self.message = message
+
+
+class ImproperLanding(Exception):
+    def __init__(self, message):
+        self.message = message
+
+
+class BoundingBox():
+    def __init__(self, corner):
+        """
+            :param corner: A list with x,y coordinates of top right corner of bounding box
+            :return: None
+        """
+        self.max_x = corner[0]
+        self.max_y = corner[1]
+
+    def inside(self, location):
+        """
+        Returns true if an xy-coordinate is inside the BoundingBox
+        """
+        if location["x"] > self.max_x or location["y"] > self.max_y:
+            return False
+        else:
+            return True
 
 
 def get_instruction(prompt):
@@ -69,7 +93,7 @@ def get_landing(lander):
     match_obj = re.match(r'^(\d+)\s+(\d+)\s+([NSEW]{1})$', input_string)
 
     if match_obj is None :
-        raise Usage("Landing coordinates must be two positive integers and a facing (NESW).")
+        raise ImproperLanding("Landing coordinates must be two positive integers and a facing (NESW).")
     else:
         output.append(int(match_obj.group(1)))
         output.append(int(match_obj.group(2)))
@@ -77,14 +101,15 @@ def get_landing(lander):
 
     return output
 
-def get_plateau():
+
+def get_top_right_corner():
     """
     Prompts the user to enter plateau coordinates. They must be positive integers
     separated by spaces.
     :return: a list of two ints containing the x and y coordinates specifying the plateau
     """
 
-    output = []
+    corner = []
 
     input_string = raw_input("Plateau:")
     # Looking for a number whitespace number
@@ -94,10 +119,10 @@ def get_plateau():
     if match_obj is None :
         raise Usage("Input coordinates must be two positive integers")
     else:
-        output.append(int(match_obj.group(1)))
-        output.append(int(match_obj.group(2)))
+        corner.append(int(match_obj.group(1)))
+        corner.append(int(match_obj.group(2)))
 
-    return output
+    return corner
 
 
 def main(argv=None):
@@ -112,9 +137,10 @@ def main(argv=None):
         else:
             print "Invalid syntax: " + "".join((" "+s) for s in argv)
     else:
-        plateau = get_plateau()
-        landing = get_landing("Rover1")
+        plateau = BoundingBox(get_top_right_corner())
+        landing = get_landing("Rover1", plateau)
         instruction = get_instruction("Rover1 Instructions:")
+        move(plateau, landing, instruction)
 
 if __name__ == "__main__":
     main()

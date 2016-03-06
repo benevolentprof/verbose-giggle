@@ -9,7 +9,7 @@ __email__ = "ses@drsusansim.org"
 __copyright__ = "2016 Susan Sim"
 __license__ = "MIT License"
 
-from rover import main, Usage, get_plateau, get_landing, get_instruction
+from rover import main, Usage, ImproperLanding, get_top_right_corner, get_landing, get_instruction
 import mock
 
 def test_cli_help(capsys):
@@ -58,7 +58,7 @@ def test_cli_plateau(capsys):
                 assert False
 
 
-def test_get_plateau_error():
+def test_get_top_right_corner_error():
     """Tests calling inputting invalid coordinates to get_location()
     """
     top_corners=["a", "a b", "a, b", "1", "1,2", "1, 2", "-1 -3"]
@@ -66,14 +66,14 @@ def test_get_plateau_error():
     for corner in top_corners:
         with mock.patch("__builtin__.raw_input", return_value=corner):
             try:
-                get_plateau()
+                get_top_right_corner()
             except Usage:
                 assert True
             else:
                 assert False
 
 
-def test_get_plateau_correct():
+def test_get_top_right_corner_correct():
     """Tests calling inputting valid coordinates to get_location()
     """
     top_corners=["1 1", "2 5", "9223372036854775807 9223372036854775807"]
@@ -82,7 +82,7 @@ def test_get_plateau_correct():
     for corner, xy in zip(top_corners, xy_list):
         with mock.patch("__builtin__.raw_input", return_value=corner):
             try:
-                input_loc = get_plateau()
+                input_loc = get_top_right_corner()
                 assert input_loc == xy
             except Usage as u:
                 print u.message
@@ -100,7 +100,7 @@ def test_get_landing_error():
         with mock.patch("__builtin__.raw_input", return_value=landing):
             try:
                 input_list = get_landing("1")
-            except Usage:
+            except ImproperLanding:
                 assert True
             else:
                 print input_list
@@ -117,7 +117,7 @@ def test_get_landing_correct():
             try:
                 input_list = get_landing("1")
                 assert input_list == landing_l
-            except Usage:
+            except ImproperLanding:
                 print landing_list
                 assert False
 
