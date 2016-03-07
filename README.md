@@ -5,6 +5,23 @@ This project is my solution for a Mars Rover problem as given below. If I were s
 my first step would be to Google for a similar problem and solution. But since this is a demonstration project,
 I'll solve this from "scratch".
 
+Usage: python mars_rover.py [count] [-h, --help]
+
+Count is the number of rovers in the squad. Default is 1, if no count is given
+
+Assumptions:
+
+Coordinates refer to map grid squares and not point locations.
+
+Mars is large and rovers are small, therefore, multiple rovers can be in the same grid square simultaneously.
+
+Rovers move in sequence, not in parallel. I'm leaving the time dimension out for a few reasons. One, the instructions
+are given in sequence. Two, it takes 4-24 minutes to transmit a message to Mars. Three, rovers normally move only
+during the sidereal day and no data is provided on the Martian day cycle.
+
+When rovers reach the edge of the plateau, they ignore instructions that would cause them to drive off.
+
+
 ================================
 Problem Statement
 =================================
