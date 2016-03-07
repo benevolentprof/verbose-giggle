@@ -9,7 +9,7 @@ __license__ = "MIT License"
 
 from rover import Rover
 from martian_plateau import MartianPlateau
-from martian_exceptions import ImproperLanding
+from martian_exceptions import ImproperLanding, ImproperInstruction
 
 
 def test_rover_constructor_error():
@@ -35,7 +35,7 @@ def test_rover_constructor_correct():
     landing_strings = ["02 2 N", "0 0 S", "33 44 E", "777 888 W"]
     landing_list = [[2, 2, "N"], [0, 0, "S"], [33, 44, "E"], [777, 888, "W"]]
     plateau = MartianPlateau("1000 1000")
-    # Call function:
+
     for landing, landing_l in zip(landing_strings, landing_list):
         try:
             rvr = Rover(landing, plateau)
@@ -45,3 +45,66 @@ def test_rover_constructor_correct():
         except ImproperLanding:
             print landing
             assert False
+
+
+def test_get_instruction_error():
+    """Tests calling inputting invalid coordinates to get_location()
+    """
+    instr_strings =["l", "m", "r", "La", "L M", "M R", " LM ", "aM", "q    R"]
+    plateau = MartianPlateau("1000 1000")
+    rvr = Rover("100 100 N", plateau)
+
+    for instr in instr_strings:
+        try:
+            rvr = Rover("100 100 N", plateau)
+            rvr.instruct(instr)
+        except ImproperInstruction:
+            assert True
+        else:
+            print instr
+            assert False
+
+
+def test_rover_left_turn():
+    plateau = MartianPlateau("5 5")
+    rvr = Rover("1 1 N", plateau)
+
+    assert rvr.get_facing() == "N"
+    rvr.instruct("L")
+    assert rvr.get_facing() == "W"
+    rvr.instruct("L")
+    assert rvr.get_facing() == "S"
+    rvr.instruct("L")
+    assert rvr.get_facing() == "E"
+    rvr.instruct("L")
+    assert rvr.get_facing() == "N"
+
+
+def test_rover_right_turn():
+    plateau = MartianPlateau("5 5")
+    rvr = Rover("1 1 N", plateau)
+
+    assert rvr.get_facing() == "N"
+    rvr.instruct("R")
+    assert rvr.get_facing() == "E"
+    rvr.instruct("R")
+    assert rvr.get_facing() == "S"
+    rvr.instruct("R")
+    assert rvr.get_facing() == "W"
+    rvr.instruct("R")
+    assert rvr.get_facing() == "N"
+
+
+def test_rover_move():
+    plateau = MartianPlateau("10 10")
+    start_locs = ["5 5 N", "5 5 E", "5 5 S", "5 5 W"]
+    new_locs = [[5, 6, "N"], [6, 5, "E"], [5, 4, "S"], [4, 5, "W"]]
+
+    for s, n in zip(start_locs, new_locs):
+        rvr = Rover(s, plateau)
+        rvr.instruct("M")
+
+        assert rvr.get_x() == n[0]
+        assert rvr.get_y() == n[1]
+        assert rvr.get_facing() == n[2]
+

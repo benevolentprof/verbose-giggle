@@ -24,81 +24,8 @@ __license__ = "MIT License"
 
 import sys
 import textwrap
-import re
 from martian_plateau import MartianPlateau
-from martian_exceptions import ImproperPlateau, ImproperInstruction, ImproperLanding
-
-def get_instruction(prompt):
-    """
-    Prompts the user to enter instructions to the rover. Inputs must consist of a sequence of Ls, Rs, and Ms in
-    any order.
-    :return: a list of strings, each consisting of one character that is an L, R, or M
-    """
-
-    output = []
-
-    input_string = raw_input(prompt)
-    match_obj = re.match(r'^[LMR]*$', input_string)
-
-    if match_obj is None:
-        raise ImproperInstruction("Instructions must consist of L, M, or R")
-    else:
-        for char in match_obj.group():
-            output.append(char)
-
-    return output
-
-
-def get_landing(lander, plateau):
-    """
-     Prompts the user to enter coordinates and a facing. They must be two positive integers
-    and a facing separated by spaces. Facing must be one of N,E,S, or W.
-    :param lander: The number of the lander being prompted
-    :return: A list containing the inputs
-    """
-
-    output = []
-
-    input_string = raw_input("Rover" + lander + " Landing:")
-    # Looking for a number whitespace number
-    # This will match 0,
-    match_obj = re.match(r'^(\d+)\s+(\d+)\s+([NSEW]{1})$', input_string)
-
-    if match_obj is None :
-        raise ImproperLanding("Landing coordinates must be two positive integers and a facing (NESW).")
-    else:
-        output.append(int(match_obj.group(1)))
-        output.append(int(match_obj.group(2)))
-        output.append(match_obj.group(3))
-
-    if plateau.is_outside([output[0], output[1]]):
-        raise ImproperLanding("Landing coordinates must be inside the plateau.")
-
-    return output
-
-
-def get_top_right_corner():
-    """
-    Prompts the user to enter plateau coordinates. They must be positive integers
-    separated by spaces.
-    :return: a list of two ints containing the x and y coordinates specifying the plateau
-    """
-
-    corner = []
-
-    input_string = raw_input("Plateau:")
-    # Looking for a number whitespace number
-    # This will match 0,
-    match_obj = re.match(r'^(\d+)\s+(\d+)$', input_string)
-
-    if match_obj is None :
-        raise ImproperPlateau("Input coordinates must be two positive integers")
-    else:
-        corner.append(int(match_obj.group(1)))
-        corner.append(int(match_obj.group(2)))
-
-    return corner
-
+from rover import Rover
 
 def main(argv=None):
 
@@ -113,13 +40,11 @@ def main(argv=None):
             print "Invalid syntax: " + "".join((" "+s) for s in argv)
     else:
         try:
-            plateau = MartianPlateau(get_top_right_corner())
-            landing = get_landing("Rover1", plateau)
-            # rover = Rover(landing, plateau)
-            instruction = get_instruction("Rover1 Instructions:")
+            plateau = MartianPlateau(raw_input("Plateau:"))
+            rover = Rover(raw_input("Rover1 Landing:"), plateau)
+            output = rover.instruct(raw_input("Rover 1 Instructions:"))
 
-            #output = rover.instruct(instruction)
-
+            print output
         except Exception as e:
             print e.message
             raise e

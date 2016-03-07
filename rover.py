@@ -8,7 +8,7 @@ __copyright__ = "2016 Susan Sim"
 __license__ = "MIT License"
 
 import re
-from martian_exceptions import InternalError, ImproperLanding, InternalError
+from martian_exceptions import InternalError, ImproperLanding, ImproperInstruction
 from martian_plateau import MartianPlateau
 
 
@@ -58,7 +58,7 @@ class Rover():
 
     def __turn_right(self):
         if self.facing == "N":
-            self.facing = "W"
+            self.facing = "E"
         elif self.facing == "E":
             self.facing = "S"
         elif self.facing == "S":
@@ -80,13 +80,22 @@ class Rover():
         else:
             raise InternalError("Invalid facing: " + self.facing)
 
-    def instruct(self, steps):
-        for s in steps:
-            if s == "L":
-                self.__turn_left()
-            elif s == "R":
-                self.__turn_right()
-            elif s == "M":
-                self.__move()
-            else:
-                raise InternalError("Invalid facing: " + self.facing)
+    def instruct(self, input_string):
+
+        match_obj = re.match(r'^([LMR])+$', input_string)
+
+        if match_obj is None:
+            raise ImproperInstruction("Instructions must consist of L, M, or R")
+        else:
+            for char in match_obj.group():
+                print char
+                if char == "L":
+                    self.__turn_left()
+                elif char == "R":
+                    self.__turn_right()
+                elif char == "M":
+                    self.__move()
+                else:
+                    raise InternalError("Invalid facing: " + self.facing)
+
+        output = "%d %d %s", self.x, self.y, self.facing
