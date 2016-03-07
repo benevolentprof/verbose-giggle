@@ -23,29 +23,40 @@ __copyright__ = "2016 Susan Sim"
 __license__ = "MIT License"
 
 import sys
+import argparse
 import textwrap
 from martian_plateau import MartianPlateau
 from rover import Rover
 
 
 def main(argv=None):
-
+    # parse command line options
     if argv is None:
         argv = sys.argv
-    # parse command line options
 
+    count = 1
     if len(argv) > 1:
         if argv[1] == "-h" or argv[1] == "--help":
             print (textwrap.dedent(__doc__))
+        elif argv[1].isdigit():
+            count = int(argv[1])
         else:
             print "Invalid syntax: " + "".join((" "+s) for s in argv)
+            print "Use -h or --help for Help"
     else:
+
+        final_positions = ""
         try:
             plateau = MartianPlateau(raw_input("Plateau:"))
-            rover = Rover(raw_input("Rover1 Landing:"), plateau)
-            output = rover.instruct(raw_input("Rover 1 Instructions:"))
+            for c in range(1, count):
+                rover = Rover(raw_input("Rover" + str(c) + " Landing:"), plateau)
+                output = rover.instruct(raw_input("Rover" + str(c) + " Instructions:"))
 
-            print "Rover1:" + output
+                # Put together the final output for the program
+                final_positions += "\nRover" + str(c) + ":" + output
+
+            print final_positions
+
         except Exception as e:
             print e.message
             raise e
