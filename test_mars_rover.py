@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""py.test cases for inputs to rover.py
+"""py.test cases for inputs to mars_rover.py
 
 """
 
@@ -9,8 +9,10 @@ __email__ = "ses@drsusansim.org"
 __copyright__ = "2016 Susan Sim"
 __license__ = "MIT License"
 
-from rover import main, Usage, ImproperLanding, get_top_right_corner, get_landing, get_instruction
 import mock
+
+from mars_rover import main, get_top_right_corner, get_landing, get_instruction, ImproperLanding, ImproperInstruction, ImproperPlateau
+from martian_plateau import MartianPlateau
 
 def test_cli_help(capsys):
     """ Tests calling main with -h or --help for instructions
@@ -18,10 +20,10 @@ def test_cli_help(capsys):
     options = ["-h", "--help"]
     for opt in options:
         # Create argument list
-        args = ["rover.py", opt]
+        args = ["mars_rover.py", opt]
         # Call function
         main(args)
-        (out, err) = capsys.readouterr();
+        (out, err) = capsys.readouterr()
         # Check output
         assert out.startswith("Mars Rover")
 
@@ -32,7 +34,7 @@ def test_cli_error(capsys):
     options = ["k", "--l", "-1"]
     for opt in options:
         # Create argument list
-        args = ["rover.py", opt]
+        args = ["mars_rover.py", opt]
         # Call function
         main(args)
         (out, err) = capsys.readouterr();
@@ -44,7 +46,7 @@ def test_cli_plateau(capsys):
     """Tests calling main from the command line with no arguments, and plateau coordinates.
     """
     # Create argument list
-    args = ["rover.py"]
+    args = ["mars_rover.py"]
 
     coordinates=["a", "a b", "a, b", "1", "1,2", "1, 2"]
     # Call function:
@@ -52,7 +54,7 @@ def test_cli_plateau(capsys):
         with mock.patch("__builtin__.raw_input", return_value=plateau):
             try:
                 main(args)
-            except Usage:
+            except ImproperPlateau:
                 assert True
             else:
                 assert False
@@ -67,7 +69,7 @@ def test_get_top_right_corner_error():
         with mock.patch("__builtin__.raw_input", return_value=corner):
             try:
                 get_top_right_corner()
-            except Usage:
+            except ImproperPlateau:
                 assert True
             else:
                 assert False
@@ -84,8 +86,8 @@ def test_get_top_right_corner_correct():
             try:
                 input_loc = get_top_right_corner()
                 assert input_loc == xy
-            except Usage as u:
-                print u.message
+            except ImproperPlateau as i:
+                print i.message
                 assert False
 
 
@@ -95,27 +97,30 @@ def test_get_landing_error():
     landing_strings = ["a", "a a", "a a a",
                        "1", "1 1", "1 1 1",
                        "2 2 n", "2 2 N "]
+    plateau = MartianPlateau([5, 5])
     # Call function:
     for landing in landing_strings:
         with mock.patch("__builtin__.raw_input", return_value=landing):
             try:
-                input_list = get_landing("1")
+                input_list = get_landing("1", plateau)
             except ImproperLanding:
                 assert True
             else:
                 print input_list
                 assert False
 
+
 def test_get_landing_correct():
     """Tests calling inputting invalid coordinates to get_location()
     """
     landing_strings = ["02 2 N", "0 0 S", "33 44 E", "777 888 W"]
     landing_list = [[2, 2, "N"], [0, 0, "S"], [33, 44, "E"], [777, 888, "W"]]
+    plateau = MartianPlateau([1000, 1000])
     # Call function:
     for landing, landing_l in zip(landing_strings, landing_list):
         with mock.patch("__builtin__.raw_input", return_value=landing):
             try:
-                input_list = get_landing("1")
+                input_list = get_landing("1", plateau)
                 assert input_list == landing_l
             except ImproperLanding:
                 print landing_list
@@ -132,7 +137,7 @@ def test_get_instruction_error():
         with mock.patch("__builtin__.raw_input", return_value=instr):
             try:
                 instr_list = get_instruction("Instruction:")
-            except Usage:
+            except ImproperInstruction:
                 assert True
             else:
                 print instr_list
@@ -156,6 +161,6 @@ def test_get_instruction_correct():
             try:
                 input_list = get_instruction("Instruction:")
                 assert input_list == instr_l
-            except Usage as u:
-                print u.message
+            except ImproperInstruction as i:
+                print i.message
                 assert False

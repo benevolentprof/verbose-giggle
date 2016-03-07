@@ -25,9 +25,6 @@ __license__ = "MIT License"
 import sys
 import textwrap
 import re
-# import os
-# myPath = os.path.dirname(os.path.abspath(__file__))
-# sys.path.insert(0, myPath)
 from martian_plateau import MartianPlateau
 
 
@@ -99,7 +96,7 @@ def get_landing(lander, plateau):
         output.append(int(match_obj.group(2)))
         output.append(match_obj.group(3))
 
-    if plateau.is_outside(output[0], output[1]):
+    if plateau.is_outside([output[0], output[1]]):
         raise ImproperLanding("Landing coordinates must be inside the plateau.")
 
     return output
@@ -150,6 +147,7 @@ def main(argv=None):
 
         except Exception as e:
             print e.message
+            raise e
 
 
 if __name__ == "__main__":
