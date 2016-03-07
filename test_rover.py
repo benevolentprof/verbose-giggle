@@ -122,3 +122,32 @@ def test_rover_move_edge():
         assert rvr.get_x() == n[0]
         assert rvr.get_y() == n[1]
         assert rvr.get_facing() == n[2]
+
+
+def test_rover_move_sequence():
+    plateau = MartianPlateau("6 6")
+    start_locs = ["0 0 N", "3 3 W", ]
+    instructions = ["MRMLMRMLMRMLMRMLMRMLMRML","MMMLMMM"]
+    new_locs = [[6, 6, "N"], [0, 0, "S"]]
+
+    for s, i, n in zip(start_locs,instructions, new_locs):
+        rvr = Rover(s, plateau)
+        rvr.instruct(i)
+
+        assert rvr.get_x() == n[0]
+        assert rvr.get_y() == n[1]
+        assert rvr.get_facing() == n[2]
+
+def test_rover_move_example():
+    plateau = MartianPlateau("5 5")
+    start_locs = ["1 2 N", "3 3 E", ]
+    instructions = ["LMLMLMLMM","MMRMMRMRRM"]
+    new_locs = [[1, 3, "N"], [5, 1, "E"]]
+
+    for s, i, n in zip(start_locs,instructions, new_locs):
+        rvr = Rover(s, plateau)
+        output =rvr.instruct(i)
+
+        assert rvr.get_x() == n[0]
+        assert rvr.get_y() == n[1]
+        assert rvr.get_facing() == n[2]
