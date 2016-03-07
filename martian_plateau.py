@@ -10,21 +10,24 @@ __email__ = "ses@drsusansim.org"
 __copyright__ = "2016 Susan Sim"
 __license__ = "MIT License"
 
+from martian_exceptions import ImproperPlateau
+import re
 
 class MartianPlateau():
-    def __init__(self, corner):
+    def __init__(self, input_string):
         """
-            :param corner: A list with x,y coordinates of top right corner of Martian plateau
+            :param corner: A string with x,y coordinates of top right corner of Martian plateau
         """
-        if isinstance(corner[0], int) and corner[0] >= 0:
-            self.max_x = corner[0]
-        else:
-            self.max_x = 0
+        # Looking for a number whitespace number
+        # This will match 0,
+        match_obj = re.match(r'^(\d+)\s+(\d+)$', input_string)
 
-        if isinstance(corner[1], int) and corner[1] >= 0:
-            self.max_y = corner[1]
+        if match_obj is None :
+            raise ImproperPlateau("Input coordinates must be two positive integers")
         else:
-            self.max_y = 0
+            self.max_x = int(match_obj.group(1))
+            self.max_y = int(match_obj.group(2))
+
 
     def get_x(self):
         return self.max_x
@@ -34,9 +37,17 @@ class MartianPlateau():
 
     def is_outside(self, cell):
         """
-        Returns true if an xy-coordinate is inside the MartianPlateau
+        Returns true if an xy-coordinate is outside the MartianPlateau
         """
         if cell[0] > self.max_x or cell[1] > self.max_y:
             return True
         else:
             return False
+
+    def is_inside(self, cell):
+        """
+        Returns true if an xy-coordinate is inside the MartianPlateau
+        :param cell: list of two integers
+        :return: Boolean
+        """
+        return not self.is_outside(cell)
