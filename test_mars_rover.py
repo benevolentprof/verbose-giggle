@@ -20,17 +20,16 @@ def test_cli_squad(capsys):
     """
     options = ["", "2"]
     for opt in options:
-        # Create argument list
-        args = ["rover.py", opt]
         # Call function
         with mock.patch("__builtin__.raw_input", return_value="x"):
             try:
-                main(args)
+                main(["rover.py", opt])
                 (out, err) = capsys.readouterr()
                 # Check output
             except ImproperPlateau as i:
                 print i.message
                 assert True
+
 
 def test_cli_help(capsys):
     """ Tests calling main with -h or --help for instructions
@@ -38,9 +37,7 @@ def test_cli_help(capsys):
     options = ["-h", "--help"]
     for opt in options:
         # Create argument list
-        args = ["rover.py", opt]
-        # Call function
-        main(args)
+        main(["rover.py", opt])
         (out, err) = capsys.readouterr()
         # Check output
         assert out.startswith("Mars Rover")

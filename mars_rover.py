@@ -34,8 +34,10 @@ def main(argv=None):
     if argv is None:
         argv = sys.argv
 
-    count = 1
-    if len(argv) > 1:
+    count = 0
+    if len(argv) == 1:
+        count = 1
+    elif len(argv) > 1:
         if argv[1] == "-h" or argv[1] == "--help":
             print (textwrap.dedent(__doc__))
         elif argv[1].isdigit():
@@ -43,12 +45,12 @@ def main(argv=None):
         else:
             print "Invalid syntax: " + "".join((" "+s) for s in argv)
             print "Use -h or --help for Help"
-    else:
 
+    if count > 0:
         final_positions = ""
         try:
             plateau = MartianPlateau(raw_input("Plateau:"))
-            for c in range(1, count):
+            for c in range(1, count+1):
                 rover = Rover(raw_input("Rover" + str(c) + " Landing:"), plateau)
                 output = rover.instruct(raw_input("Rover" + str(c) + " Instructions:"))
 
