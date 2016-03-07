@@ -25,6 +25,10 @@ __license__ = "MIT License"
 import sys
 import textwrap
 import re
+# import os
+# myPath = os.path.dirname(os.path.abspath(__file__))
+# sys.path.insert(0, myPath)
+from martian_plateau import MartianPlateau
 
 
 class Usage(Exception):
@@ -32,29 +36,24 @@ class Usage(Exception):
         self.message = message
 
 
-class ImproperLanding(Exception):
+class InternalError(Exception):
     def __init__(self, message):
         self.message = message
 
 
-class BoundingBox():
-    def __init__(self, corner):
-        """
-            :param corner: A list with x,y coordinates of top right corner of bounding box
-            :return: None
-        """
-        self.max_x = corner[0]
-        self.max_y = corner[1]
+class ImproperInstruction(Exception):
+    def __init__(self, message):
+        self.message = message
 
-    def is_outside(self, input_x, input_y):
-        """
-        Returns true if an xy-coordinate is inside the BoundingBox
-        """
-        if input_x > self.max_x or input_y > self.max_y:
-            return True
-        else:
-            return False
 
+class ImproperPlateau(Exception):
+    def __init__(self, message):
+        self.message = message
+
+
+class ImproperLanding(Exception):
+    def __init__(self, message):
+        self.message = message
 
 
 def get_instruction(prompt):
@@ -70,7 +69,7 @@ def get_instruction(prompt):
     match_obj = re.match(r'^[LMR]*$', input_string)
 
     if match_obj is None:
-        raise Usage("Instructions must consist of L, M, or R")
+        raise ImproperInstruction("Instructions must consist of L, M, or R")
     else:
         for char in match_obj.group():
             output.append(char)
@@ -121,7 +120,7 @@ def get_top_right_corner():
     match_obj = re.match(r'^(\d+)\s+(\d+)$', input_string)
 
     if match_obj is None :
-        raise Usage("Input coordinates must be two positive integers")
+        raise ImproperPlateau("Input coordinates must be two positive integers")
     else:
         corner.append(int(match_obj.group(1)))
         corner.append(int(match_obj.group(2)))
@@ -142,13 +141,16 @@ def main(argv=None):
             print "Invalid syntax: " + "".join((" "+s) for s in argv)
     else:
         try:
-            plateau = BoundingBox(get_top_right_corner())
+            plateau = MartianPlateau(get_top_right_corner())
             landing = get_landing("Rover1", plateau)
+            # rover = Rover(landing, plateau)
+            instruction = get_instruction("Rover1 Instructions:")
+
+            #output = rover.instruct(instruction)
+
         except Exception as e:
             print e.message
 
-        instruction = get_instruction("Rover1 Instructions:")
-        # move(plateau, landing, instruction)
 
 if __name__ == "__main__":
     main()
