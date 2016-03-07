@@ -1,15 +1,15 @@
-# verbose-giggle
-Mars Rover Demonstration Project
+# Mars Rover Demonstration Project
 
 This project is my solution for a Mars Rover problem as given below. If I were solving this problem in practice,
 my first step would be to Google for a similar problem and solution. But since this is a demonstration project,
 I'll solve this from "scratch".
 
-Usage: python mars_rover.py [count] [-h, --help]
+##Usage
+python mars_rover.py [count] [-h, --help]
 
 Count is the number of rovers in the squad. Default is 1, if no count is given
 
-Assumptions:
+## Assumptions
 
 Coordinates refer to map grid squares and not point locations.
 
