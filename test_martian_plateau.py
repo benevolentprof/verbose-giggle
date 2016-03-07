@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-""" Docstring """
+""" Test cases for py.test for martian_plateau.py """
 
 __author__ = 'Susan Sim'
 __email__ = "ses@drsusansim.org"

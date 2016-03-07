@@ -11,8 +11,10 @@ __license__ = "MIT License"
 
 import mock
 
-from mars_rover import main, get_top_right_corner, get_landing, get_instruction, ImproperLanding, ImproperInstruction, ImproperPlateau
+from mars_rover import main, get_top_right_corner, get_landing, get_instruction
 from martian_plateau import MartianPlateau
+from martian_exceptions import ImproperLanding, ImproperInstruction, ImproperPlateau
+
 
 def test_cli_help(capsys):
     """ Tests calling main with -h or --help for instructions

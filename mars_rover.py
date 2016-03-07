@@ -26,32 +26,7 @@ import sys
 import textwrap
 import re
 from martian_plateau import MartianPlateau
-
-
-class Usage(Exception):
-    def __init__(self, message):
-        self.message = message
-
-
-class InternalError(Exception):
-    def __init__(self, message):
-        self.message = message
-
-
-class ImproperInstruction(Exception):
-    def __init__(self, message):
-        self.message = message
-
-
-class ImproperPlateau(Exception):
-    def __init__(self, message):
-        self.message = message
-
-
-class ImproperLanding(Exception):
-    def __init__(self, message):
-        self.message = message
-
+from martian_exceptions import ImproperPlateau, ImproperInstruction, ImproperLanding
 
 def get_instruction(prompt):
     """
