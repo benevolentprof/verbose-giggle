@@ -27,6 +27,7 @@ import textwrap
 from martian_plateau import MartianPlateau
 from rover import Rover
 
+
 def main(argv=None):
 
     if argv is None:
@@ -44,7 +45,7 @@ def main(argv=None):
             rover = Rover(raw_input("Rover1 Landing:"), plateau)
             output = rover.instruct(raw_input("Rover 1 Instructions:"))
 
-            print output
+            print "Rover1:" + output
         except Exception as e:
             print e.message
             raise e

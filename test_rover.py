@@ -102,8 +102,8 @@ def test_rover_move():
 
     for s, n in zip(start_locs, new_locs):
         rvr = Rover(s, plateau)
-        rvr.instruct("M")
-
+        output = rvr.instruct("M")
+        print output
         assert rvr.get_x() == n[0]
         assert rvr.get_y() == n[1]
         assert rvr.get_facing() == n[2]
