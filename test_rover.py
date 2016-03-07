@@ -95,7 +95,7 @@ def test_rover_right_turn():
     assert rvr.get_facing() == "N"
 
 
-def test_rover_move():
+def test_rover_move_single():
     plateau = MartianPlateau("10 10")
     start_locs = ["5 5 N", "5 5 E", "5 5 S", "5 5 W"]
     new_locs = [[5, 6, "N"], [6, 5, "E"], [5, 4, "S"], [4, 5, "W"]]
@@ -108,3 +108,17 @@ def test_rover_move():
         assert rvr.get_y() == n[1]
         assert rvr.get_facing() == n[2]
 
+
+def test_rover_move_edge():
+    plateau = MartianPlateau("4 4")
+    start_locs = ["2 2 N", "2 2 E", "2 2 S", "2 2 W"]
+    instructions = "MMMM"
+    new_locs = [[2, 4, "N"], [4, 2, "E"], [2, 0, "S"], [0, 2, "W"]]
+
+    for s, n in zip(start_locs, new_locs):
+        rvr = Rover(s, plateau)
+        rvr.instruct(instructions)
+
+        assert rvr.get_x() == n[0]
+        assert rvr.get_y() == n[1]
+        assert rvr.get_facing() == n[2]

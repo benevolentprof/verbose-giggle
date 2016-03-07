@@ -39,7 +39,7 @@ class MartianPlateau():
         """
         Returns true if an xy-coordinate is outside the MartianPlateau
         """
-        if cell[0] > self.max_x or cell[1] > self.max_y:
+        if cell[0] > self.max_x or cell[1] > self.max_y or cell[0] < 0 or cell[1] < 0:
             return True
         else:
             return False

@@ -70,13 +70,17 @@ class Rover():
 
     def __move(self):
         if self.facing == "N":
-            self.y += 1
+            if self.plateau.is_inside([self.x, self.y + 1]):
+                self.y += 1
         elif self.facing == "E":
-            self.x += 1
+            if self.plateau.is_inside([self.x + 1, self.y]):
+                self.x += 1
         elif self.facing == "W":
-            self.x -= 1
+            if self.plateau.is_inside([self.x - 1, self.y]):
+                self.x -= 1
         elif self.facing == "S":
-            self.y -= 1
+            if self.plateau.is_inside([self.x, self.y - 1]):
+                self.y -= 1
         else:
             raise InternalError("Invalid facing: " + self.facing)
 
@@ -88,7 +92,6 @@ class Rover():
             raise ImproperInstruction("Instructions must consist of L, M, or R")
         else:
             for char in match_obj.group():
-                print char
                 if char == "L":
                     self.__turn_left()
                 elif char == "R":
@@ -98,4 +101,4 @@ class Rover():
                 else:
                     raise InternalError("Invalid facing: " + self.facing)
 
-        output = "%d %d %s", self.x, self.y, self.facing
+            return "%d %d %s" % (self.x, self.y, self.facing)
