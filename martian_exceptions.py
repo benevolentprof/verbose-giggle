@@ -30,3 +30,7 @@ class ImproperPlateau(Exception):
 class ImproperLanding(Exception):
     def __init__(self, message):
         self.message = message
+
+class RoverProximityError(Exception):
+    def __init__(self, message):
+        self.message = message

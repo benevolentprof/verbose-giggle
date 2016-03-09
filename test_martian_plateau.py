@@ -7,8 +7,9 @@ __email__ = "ses@drsusansim.org"
 __copyright__ = "2016 Susan Sim"
 __license__ = "MIT License"
 
+from martian_exceptions import ImproperPlateau, RoverProximityError
 from martian_plateau import MartianPlateau
-from martian_exceptions import ImproperPlateau
+from rover import Rover
 
 
 def test_martian_plateau():
@@ -58,3 +59,29 @@ def test_is_outside():
     assert mp.is_outside([5, 5]) is False
     assert mp.is_outside([5, 6]) is True
     assert mp.is_outside([6, 5]) is True
+
+
+def test_add_rover():
+    """Tests adding rover to private list
+    """
+
+    mp = MartianPlateau("5 5")
+    rvr1 = Rover("1 1 N", mp)
+
+    mp.add_rover(rvr1)
+    assert mp.num_rovers() == 1
+    assert mp.get_rover_locations() == [[1, 1, "N"]]
+
+    rvr2 = Rover("2 2 N", mp)
+    mp.add_rover(rvr2)
+    assert mp.num_rovers() == 2
+    assert mp.get_rover_locations() == [[1, 1, "N"], [2, 2, "N"]]
+
+    rvr3 = Rover("2 2 N", mp)
+
+    try:
+        mp.add_rover(rvr3)
+    except RoverProximityError as r:
+        print r.message
+        assert True
+

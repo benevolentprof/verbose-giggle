@@ -13,6 +13,7 @@ __license__ = "MIT License"
 from martian_exceptions import ImproperPlateau
 import re
 
+
 class MartianPlateau():
     def __init__(self, input_string):
         """
@@ -27,7 +28,7 @@ class MartianPlateau():
         else:
             self.max_x = int(match_obj.group(1))
             self.max_y = int(match_obj.group(2))
-
+            self.__rover_list = []
 
     def get_x(self):
         return self.max_x
@@ -51,3 +52,17 @@ class MartianPlateau():
         :return: Boolean
         """
         return not self.is_outside(cell)
+
+    def add_rover(self, rover):
+        self.__rover_list.append(rover)
+
+    def num_rovers(self):
+        return len(self.__rover_list)
+
+    def get_rover_locations(self):
+        location_list = []
+        for rvr in self.__rover_list:
+            loc = [rvr.get_x(), rvr.get_y(), rvr.get_facing()]
+            location_list.append(loc)
+
+        return location_list
